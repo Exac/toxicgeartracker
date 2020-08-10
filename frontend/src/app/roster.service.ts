@@ -34,7 +34,7 @@ export class RosterService {
     );
   }
 
-  fetchGuildLogs(count: number = 10): Observable<string[]> {
+  private fetchGuildLogs(count: number = 10): Observable<string[]> {
     return this.http
       .get<WCLReportsUserOwnerResponse | WCLError>(`https://classic.warcraftlogs.com/v1/reports/user/${environment.wclAccount}?api_key=${environment.wclApiKey}`)
       .pipe(
@@ -45,7 +45,7 @@ export class RosterService {
       );
   }
 
-  fetchPlayersFromLog(fight: string): Observable<string[]> {
+  private fetchPlayersFromLog(fight: string): Observable<string[]> {
     return this.http
       .get<WCLReportFightCodeResponse | WCLError>(`https://classic.warcraftlogs.com:443/v1/report/fights/${fight}?api_key=${environment.wclApiKey}`)
       .pipe(

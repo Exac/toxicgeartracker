@@ -1,7 +1,7 @@
 import { inject, TestBed } from '@angular/core/testing';
 
 import { RosterService } from './roster.service';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController, TestRequest } from '@angular/common/http/testing';
 
 describe('RosterService', () => {
   let service: RosterService;
@@ -20,40 +20,17 @@ describe('RosterService', () => {
 
   it('should fetch the most recent raid logs from warcraftlogs', inject([HttpTestingController, RosterService], (httpMock: HttpTestingController, service: RosterService) => {
     // We call the service
-    service.fetchGuildLogs().subscribe((roster: string[]) => {
-      expect(roster.length).toBeGreaterThan(0);
-    });
+    service.fetchRoster().subscribe();
 
     // We expect the httpMock to have been called a certain way.
-    const req = httpMock.expectOne('https://classic.warcraftlogs.com/v1/reports/user/pronator?api_key=688e15caae84a659990c486a78fc6383');
-    expect(req.request.method).toEqual('GET');
-
+    const requestGuildLogs = httpMock.expectOne('https://classic.warcraftlogs.com/v1/reports/user/pronator?api_key=688e15caae84a659990c486a78fc6383');
+    expect(requestGuildLogs.request.method).toEqual('GET');
     // Then we set the fake data to be returned by the mock
-    req.flush([
-      {
-        id: 'hqFJYGZ4B9KRQCyz',
-        title: 'MC Alt Raid',
-        owner: 'pronator',
-        start: 1596167134813,
-        end: 1596173775059,
-        zone: 1000
-      },
-      {
-        id: 'QLYFabJkWDfqCzn3',
-        title: 'BWL\/MC Alt Raid',
-        owner: 'pronator',
-        start: 1596161427584,
-        end: 1596165805135,
-        zone: 1002
-      },
-      {
-        id: 'PAOsoadoaodpasd6',
-        title: 'BWL',
-        owner: 'pronator',
-        start: 1596161427584,
-        end: 1596165805135,
-        zone: 1001
-      }]);
+    requestGuildLogs.flush([{id: 'hqFJYGZ4B9KRQCyz'}, {id: 'QLYFabJkWDfqCzn3',}, {id: 'PAOsoadoaodpasd6',}]);
 
+    // Expect three requests for each of the 3 logs we mocked:
+    const requestPlayers: TestRequest[] = httpMock.match('https://.*.warcraftlogs.com:443/v1/report/fights/.*?api_key=.*');
+    requestPlayers.forEach(req => expect(req.request.method).toEqual('GET'));
+    requestPlayers.forEach(req => req.flush({'exportedCharacters': [{name: 'Exac'}, {name: 'Epuration'}]}));
   }));
 });
