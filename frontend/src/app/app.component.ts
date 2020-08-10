@@ -11,7 +11,7 @@ export class AppComponent {
   }
 
   temporary () {
-    this.roster.fetchGuildLogs().subscribe(value => console.log(value));
+    this.roster.fetchRoster().subscribe((v:string[]) => console.log(v.sort()));
   }
 
 }

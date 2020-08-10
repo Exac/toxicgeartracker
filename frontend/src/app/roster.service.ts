@@ -1,8 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
-import { catchError, map } from 'rxjs/operators';
+import {
+  catchError,
+  debounceTime,
+  flatMap,
+  map,
+} from 'rxjs/operators';
+import { fromArray } from 'rxjs/internal/observable/fromArray';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +19,19 @@ export class RosterService {
   }
 
   fetchRoster(): Observable<string[]> {
-    // First, get logs from the guild's last few raids.
-    this.fetchGuildLogs().subscribe();
-
-    return of(['Exac', 'Epuration']);
+    const roster: Map<string, null> = new Map(); // Store players' names in this map as keys.
+    // First, get logs from the guild's last 10 raids.
+    return this.fetchGuildLogs().pipe(
+      // Make a request to WCL for each log, and get the list of players in each raid
+      map(fights => fromArray(fights.map(fight => this.fetchPlayersFromLog(fight))).pipe()),
+      flatMap(value => value), // Flatten the
+      flatMap(value => value), // observables.
+      map(value => {
+        value.map(v => roster.set(v, null)); // Add all names into the roster
+        return Array.from(roster.keys()); // Every time this returns it can grow in size.
+      }),
+      debounceTime(500) // No need to return 10 times...
+    );
   }
 
   fetchGuildLogs(count: number = 10): Observable<string[]> {
@@ -30,8 +45,20 @@ export class RosterService {
       );
   }
 
-  fetchPlayersFromLog(): Observable<string[]> {
-    return of(['Exac', 'Epuration']);
+  fetchPlayersFromLog(fight: string): Observable<string[]> {
+    return this.http
+      .get<WCLReportFightCodeResponse | WCLError>(`https://classic.warcraftlogs.com:443/v1/report/fights/${fight}?api_key=${environment.wclApiKey}`)
+      .pipe(
+        map(response => {
+          if (!isWCLError(response)) {
+            return response;
+          }
+          throw new Error('No characters found in fight ${fight}');
+        }),
+        map((log: WCLReportFightCodeResponse) => log.exportedCharacters),
+        map((characters: WCLReportFightCodeExportedCharacter[]) => characters.map((character) => character.name)),
+        catchError(() => [])
+      );
   }
 }
 

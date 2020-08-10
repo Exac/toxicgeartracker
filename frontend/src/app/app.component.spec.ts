@@ -20,7 +20,7 @@ describe('AppComponent', () => {
         {
           provide: RosterService, useValues: {
             fetchRoster: () => of(['Exac', 'Epuration', 'Rain']),
-            fetchPlayersFromLog: () => of(['Exac', 'Epuration']),
+            fetchPlayersFromLog: () => of(['Pronator', 'Epuration']),
             fetchGuildLogs: () => of(['123', '456', '789'])
           }
         }
