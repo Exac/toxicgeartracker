@@ -18,6 +18,7 @@ export class RosterService {
   constructor(private http: HttpClient) {
   }
 
+  /** Get a list of players that were in the most recent raids */
   fetchRoster(): Observable<string[]> {
     const roster: Map<string, null> = new Map(); // Store players' names in this map as keys.
     // First, get logs from the guild's last 10 raids.
@@ -34,6 +35,11 @@ export class RosterService {
     );
   }
 
+  /**
+   * Get the most recent logs from your warcraftlogs account.
+   * @param count Number of recently uploaded logs to find active players from.
+   * @private
+   */
   private fetchGuildLogs(count: number = 10): Observable<string[]> {
     return this.http
       .get<WCLReportsUserOwnerResponse | WCLError>(`https://classic.warcraftlogs.com/v1/reports/user/${environment.wclAccount}?api_key=${environment.wclApiKey}`)
@@ -45,19 +51,20 @@ export class RosterService {
       );
   }
 
+  /**
+   * Get a list of raid members for the supplied WCL fights.
+   * @param fight The id of a WCL log.
+   * @private
+   */
   private fetchPlayersFromLog(fight: string): Observable<string[]> {
     return this.http
       .get<WCLReportFightCodeResponse | WCLError>(`https://classic.warcraftlogs.com:443/v1/report/fights/${fight}?api_key=${environment.wclApiKey}`)
       .pipe(
-        map(response => {
-          if (!isWCLError(response)) {
-            return response;
-          }
-          throw new Error('No characters found in fight ${fight}');
-        }),
-        map((log: WCLReportFightCodeResponse) => log.exportedCharacters),
+        // If there is an error from WCL, just return an empty array.
+        map(response => isWCLError(response) ? { exportedCharacters: [] } as unknown as WCLReportFightCodeResponse : response),
+        map((log: WCLReportFightCodeResponse) => log.exportedCharacters), // Extract the list of characters from the log
         map((characters: WCLReportFightCodeExportedCharacter[]) => characters.map((character) => character.name)),
-        catchError(() => [])
+        catchError((err) => {console.log({err}); return [];}) // Return empty if there is an error.
       );
   }
 }
