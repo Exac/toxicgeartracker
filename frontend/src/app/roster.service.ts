@@ -14,12 +14,24 @@ type WCLError = {
   error: string;
 };
 
+// Types from query to reports/user/{owner}
+// https://classic.warcraftlogs.com/v1/reports/user/pronator?api_key=688e15caae84a659990c486a78fc6383
+type WCLReportsUserOwner = WCLReportsUserOwnerFight[];
+type WCLReportsUserOwnerFight = {
+  id: string; // "hqFJYGZ4B9KRQCyz"
+  title: string; // "MC Alt Raid"
+  owner: string; // "pronator"
+  start: number; // 1596167134813
+  end: number; // 1596173775059
+  zone: number; // 1000
+};
+
 // Types from query to report/fight/{code}
-// `https://classic.warcraftlogs.com/v1/reports/guild/toxic/fairbanks/us?api_key=688e15caae84a659990c486a78fc6383`
+// https://www.warcraftlogs.com:443/v1/report/fights/hqFJYGZ4B9KRQCyz?api_key=688e15caae84a659990c486a78fc6383
 type WCLReportFightCodeResponse = {
   fights: WCLReportFightCodeFight[];
   language: string; // "en"
-  friendlies: WCLReportFightCodeUnit[];
+  friendlies: WCLReportFightCodeUnit[]; // Includes players outside raid and NPCs identifiable by type "Boss", etc.
   enemies: WCLReportFightCodeUnit[];
   friendlyPets: WCLReportFightCodeUnit[];
   enemyPets: WCLReportFightCodeUnit[];
@@ -31,7 +43,7 @@ type WCLReportFightCodeResponse = {
   start: number; // 1596167134813
   end: number; // 1596173775059
   zone: number; // 1000
-  exportedCharacters: [];
+  exportedCharacters: WCLReportFightCodeExportedCharacter[];
 };
 type WCLReportFightCodeUnit = {
   name: string; // "Summoned Skeleton"
@@ -41,7 +53,7 @@ type WCLReportFightCodeUnit = {
   server?: string; // "Fairbanks"
   icon: string; // "Warrior-Fury"
   petOwner?: number;
-  fights: WCLReportFightCodeFight[];
+  fights: WCLReportFightCodeFight[]; // Players in the raid from a log!
 };
 type WCLReportFightCodeFight = {
   id: number; // 286
