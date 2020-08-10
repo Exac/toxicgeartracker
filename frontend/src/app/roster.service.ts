@@ -1,11 +1,43 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { environment } from '../environments/environment';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RosterService {
 
-  constructor() { }
+  constructor(private http: HttpClient) {
+  }
+
+  fetchRoster(): Observable<string[]> {
+    // First, get logs from the guild's last few raids.
+    this.fetchGuildLogs().subscribe();
+
+    return of(['Exac', 'Epuration']);
+  }
+
+  fetchGuildLogs(count: number = 10): Observable<string[]> {
+    return this.http
+      .get<WCLReportsUserOwnerResponse | WCLError>(`https://classic.warcraftlogs.com/v1/reports/user/${environment.wclAccount}?api_key=${environment.wclApiKey}`)
+      .pipe(
+        map(response => isWCLError(response) ? [] : response), // Results are empty if WCL returns an error.
+        map((logs: WCLReportsUserOwnerFight[]) => logs.map((log: WCLReportsUserOwnerFight) => log.id)),
+        map((ids: string[]) => ids.slice(0, count)), // Remove old logs.
+        catchError(() => []) // Return empty results if there was some other problem with the request.
+      );
+  }
+
+  fetchPlayersFromLog(): Observable<string[]> {
+    return of(['Exac', 'Epuration']);
+  }
+}
+
+/** Type Guard */
+function isWCLError(data: WCLError | WCLReportsUserOwnerResponse | WCLReportFightCodeResponse): data is WCLError {
+  return (data as WCLError).error !== undefined;
 }
 
 // Response from WCL when request fails
@@ -16,7 +48,7 @@ type WCLError = {
 
 // Types from query to reports/user/{owner}
 // https://classic.warcraftlogs.com/v1/reports/user/pronator?api_key=688e15caae84a659990c486a78fc6383
-type WCLReportsUserOwner = WCLReportsUserOwnerFight[];
+type WCLReportsUserOwnerResponse = WCLReportsUserOwnerFight[];
 type WCLReportsUserOwnerFight = {
   id: string; // "hqFJYGZ4B9KRQCyz"
   title: string; // "MC Alt Raid"
