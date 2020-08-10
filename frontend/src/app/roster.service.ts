@@ -24,9 +24,9 @@ export class RosterService {
     return this.fetchGuildLogs().pipe(
       // Make a request to WCL for each log, and get the list of players in each raid
       map(fights => fromArray(fights.map(fight => this.fetchPlayersFromLog(fight))).pipe()),
-      flatMap(value => value), // Flatten the
-      flatMap(value => value), // observables.
-      map(value => {
+      flatMap((value: Observable<Observable<string[]>>) => value), // Flatten the
+      flatMap((value: Observable<string[]>) => value), // observables.
+      map((value: string[]) => {
         value.map(v => roster.set(v, null)); // Add all names into the roster
         return Array.from(roster.keys()); // Every time this returns it can grow in size.
       }),
