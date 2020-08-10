@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   wclApiKey: '688e15caae84a659990c486a78fc6383',
   wclAccount: 'pronator',
-  guild: 'toxic'
+  guild: 'toxic',
+  server: 'fairbanks'
 };
 
 /*
