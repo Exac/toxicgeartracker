@@ -20,12 +20,18 @@ describe('GearService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should convert a request from IFP into out datastructure', () => {
+  it('should convert a request from IFP into our Player datastructure', () => {
     // Arrange
     const req = request;
     const isPlayer = (req: Player | unknown): req is Player => {
-      return typeof (req as Player).updated === 'string';
-    }
+      return (
+        typeof (req as Player).name === 'string' &&
+        typeof (req as Player).server === 'string' &&
+        typeof (req as Player).updated === 'string' &&
+        typeof (req as Player).gear === 'object' &&
+        typeof (req as Player).wearing === 'object'
+      );
+    };
 
     // Act
     const result: Player = GearService.convertIFPRequestToGear(req);
