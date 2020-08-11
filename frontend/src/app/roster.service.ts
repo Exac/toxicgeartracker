@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { environment } from '../environments/environment';
 import {
   catchError,
@@ -8,7 +8,6 @@ import {
   flatMap,
   map,
 } from 'rxjs/operators';
-import { fromArray } from 'rxjs/internal/observable/fromArray';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +23,7 @@ export class RosterService {
     // First, get logs from the guild's last 10 raids.
     return this.fetchGuildLogs().pipe(
       // Make a request to WCL for each log, and get the list of players in each raid
-      map(fights => fromArray(fights.map(fight => this.fetchPlayersFromLog(fight))).pipe()),
+      map(fights => from(fights.map(fight => this.fetchPlayersFromLog(fight))).pipe()),
       flatMap((value: Observable<Observable<string[]>>) => value), // Flatten the
       flatMap((value: Observable<string[]>) => value), // observables.
       map((value: string[]) => {
