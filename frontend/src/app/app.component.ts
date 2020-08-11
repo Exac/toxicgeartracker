@@ -14,8 +14,12 @@ export class AppComponent {
     ) {
   }
 
-  temporary () {
+  fetchRoster () {
     this.roster.fetchRoster().subscribe((v:string[]) => console.log(v.sort()));
   }
+  fetchGear () {
+    this.gear.fetchPlayersGear('Exac').subscribe((gear => console.log(gear)));
+  }
+
 
 }
