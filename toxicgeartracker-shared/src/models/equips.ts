@@ -1,4 +1,4 @@
-import { Item } from './item';
+import { Item } from "./item";
 
 export type Equips = {
   Head: Item[];
@@ -15,7 +15,7 @@ export type Equips = {
   Feet: Item[];
   Finger: Item[];
   Trinket: Item[];
-  'Main Hand': Item[];
-  'Two Hand': Item[];
+  "Main Hand": Item[];
+  "Two Hand": Item[];
   Ranged: Item[];
 };

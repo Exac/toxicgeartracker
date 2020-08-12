@@ -1,1 +1,1 @@
-export { Item, Player, Equips } from "models/index";
+export { Item, Player, Equips, IFetchPlayerGearDto } from "models/index";
