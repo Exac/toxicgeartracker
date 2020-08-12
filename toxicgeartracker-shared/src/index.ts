@@ -1,1 +1,1 @@
-export { Item, Player, Equips } from "./models";
+export { Item, Player, Equips } from "models/index";
