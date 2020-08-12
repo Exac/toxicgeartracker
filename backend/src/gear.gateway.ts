@@ -14,6 +14,7 @@ export class GearGateway {
 
   @SubscribeMessage('fetchPlayersGear')
   onEvent(@MessageBody() data: unknown): Observable<WsResponse<number>> {
+
     const event = 'fetchPlayersGear';
     const response = [1, 2, 3];
 

@@ -2,20 +2,23 @@ import { HttpService, Injectable } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { Equips, Item, Player } from '../player';
 import { IFPCharacter, IFPGear, IFPRequest } from '../ifp';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class GearService {
   constructor(private readonly httpService: HttpService) {}
 
-  stub() {
-    return this.httpService.get('http://google.com').subscribe();
+  /** Get the player's gear. This takes 5+ seconds. */
+  getPlayer(character: string, server: string): Observable<Player> {
+    const uri: string = `https://ironforge.pro/api/players?player=${character}-${server}`;
+    return this.httpService
+      .get<IFPRequest>(uri)
+      .pipe(
+        map(request => GearService.convertIFPRequestToPlayer(request.data))
+      );
   }
 
-  getGear(character: string, server: string): Observable<string> {
-    return of('getGear');
-  }
-
-  static convertIFPRequestToGear(request: IFPRequest): Player {
+  static convertIFPRequestToPlayer(request: IFPRequest): Player {
     const gear: Equips = GearService.convertIFPCharacterToEquips(request.gear);
     const wearing: Equips = GearService.convertIFPCharacterToEquips(
       request.latestGear['1002'].gear,
