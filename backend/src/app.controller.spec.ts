@@ -19,8 +19,8 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should have some fn to handle get requests"', () => {
-      expect(appController.getHello).toBeTruthy();
-      // expect(appController.getHello()).toBe('Hello World!');
+      expect(appController.getRoot).toBeTruthy();
+      // expect(appController.getRoot()).toBe('Hello World!');
     });
   });
 });

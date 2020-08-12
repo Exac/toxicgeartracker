@@ -17,14 +17,16 @@ export class GearService {
     this.socket = io(backendURI);
   }
 
-  fetchPlayersGear(player: string): Observable<string> {
-    this.socket.emit('fetchPlayersGear', { message: player });
+  fetchPlayersGear(player: string, server: string): Observable<string> {
+    console.log(`SOCKET SEND fetchPlayersGear`, { player, server });
+    this.socket.emit('fetchPlayersGear', { player, server });
     return of('TODO: create websocket connection to backend wait for response.');
   }
 
   onFetchPlayerGear() {
     return new Observable(observer => {
       this.socket.on('fetchPlayersGear', (msg: string) => {
+        console.log(`SOCKET RECV fetchPlayersGear`, { msg });
         observer.next(msg);
       })
     })

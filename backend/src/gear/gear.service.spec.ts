@@ -34,7 +34,7 @@ describe('GearService', () => {
     };
 
     // Act
-    const result: Player = GearService.convertIFPRequestToGear(req);
+    const result: Player = GearService.convertIFPRequestToPlayer(req);
 
     // Assert
     expect(isPlayer(result)).toBeTruthy();
