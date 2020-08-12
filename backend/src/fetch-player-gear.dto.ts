@@ -1,5 +1,5 @@
 import { IsString } from 'class-validator/src/index';
-import { IFetchPlayerGearDto } from 'toxicgeartracker-shared/src/models';
+import { IFetchPlayerGearDto } from 'toxicgeartracker-shared';
 
 class FetchPlayerGearDto implements IFetchPlayerGearDto{
   @IsString()
