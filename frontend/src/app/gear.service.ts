@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import * as io from 'socket.io-client';
 import { environment } from '../environments/environment';
+import Socket = SocketIOClient.Socket;
 
 @Injectable({
   providedIn: 'root'
 })
 export class GearService {
 
-  private socket: SocketIOClient.Socket;
+  private socket: Socket;
 
   constructor(private http: HttpClient) {
     const backendURI = `${environment.backend.uri}:${environment.backend.port}`;

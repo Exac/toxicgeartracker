@@ -1,4 +1,4 @@
-import { IFPRequest } from './ifp';
+import { IFPRequest } from '../ifp';
 
 /** Example response from https://ironforge.pro/api/players?player=Epuration-Fairbanks */
 export const request: IFPRequest = {

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GearService } from './gear.service';
-import { request } from '../request.fixture';
+import { request } from './request.fixture';
 import { Player } from '../player';
 import { HttpModule } from '@nestjs/common';
 
