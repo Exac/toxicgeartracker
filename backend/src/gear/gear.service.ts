@@ -1,6 +1,6 @@
 import { HttpService, Injectable } from '@nestjs/common';
-import { Observable, of } from 'rxjs';
-import { Equips, Item, Player } from '../player';
+import { Observable } from 'rxjs';
+import { Equips, Item, Player } from 'toxicgeartracker-shared';
 import { IFPCharacter, IFPGear, IFPRequest } from '../ifp';
 import { map } from 'rxjs/operators';
 
