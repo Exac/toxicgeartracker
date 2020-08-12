@@ -1,0 +1,31 @@
+{
+  "name": "toxicgeartracker-shared",
+  "version": "0.0.0",
+  "description": "Shared typings for toxicgeartracker.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "scripts": {
+    "test": "jest",
+    "prepublish": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/exac/toxicgeartracker.git"
+  },
+  "keywords": [
+    "wow",
+    "typescript"
+  ],
+  "author": "Thomas McLennan <contact@thomasmclennan.ca>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/exac/toxicgeartracker/issues"
+  },
+  "homepage": "https://github.com/exac/toxicgeartracker#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.9",
+    "jest": "^26.3.0",
+    "ts-jest": "^26.2.0",
+    "typescript": "^3.9.7"
+  }
+}
