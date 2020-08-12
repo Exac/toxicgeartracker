@@ -1,4 +1,4 @@
-import { Item } from ".";
+import { Item } from "./item";
 
 describe("Item", () => {
   test("should have a name", () => {
@@ -9,7 +9,7 @@ describe("Item", () => {
     // Assert
     expect(mockItem).toHaveProperty("name");
   });
-  test('should have an id', () => {
+  test("should have an id", () => {
     // Arrange, Act
     // Act
     const mockItem: Item = { id: 123, name: "Test Item" };
