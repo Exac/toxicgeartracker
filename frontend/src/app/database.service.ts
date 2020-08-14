@@ -111,6 +111,10 @@ export class DatabaseService {
     this.updateAllPlayers(players);
   }
 
+  clear() {
+    localStorage.clear();
+  }
+
   private static isPlayer(player: any): player is PlayerType {
     if (
       !player.name ||

@@ -1,5 +1,7 @@
 <button (click)="fetchRoster()">roster</button>
 <br>
+<button (click)="clearDatabase()" disabled>empty database</button>
+<br>
 <input #name placeholder="name" (change)="setName(name.value)"/>
 <input #server placeholder="server" (keyup)="setServer(server.value)"/>
 <button (click)="fetchGear()">gear</button>

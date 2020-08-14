@@ -18,7 +18,7 @@ export class GearGateway {
     @MessageBody() data: IFetchPlayerGearDto,
   ): Observable<WsResponse<Player>> {
     return this.gear
-      .getPlayer(data.player, data.server)
+      .getPlayer(data.player, data.server ?? 'Fairbanks')
       .pipe(map(player => ({ event: 'fetchPlayersGear', data: player })));
   }
 }

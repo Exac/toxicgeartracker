@@ -3,7 +3,7 @@
 export type IFPRequest = {
   gear: IFPCharacter;
   latestGear: {
-    '1002': { gear: IFPCharacter; date: string }; // "2020-08-07" // Current gear
+    '1002'?: { gear: IFPCharacter; date: string }; // "2020-08-07" // Current gear
     '1000': { gear: IFPCharacter; date: string }; // "2020-07-30"
   };
   info: IFPPlayerInfo;
