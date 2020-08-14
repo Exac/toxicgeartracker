@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator/src/index';
+import { IsString } from 'class-validator';
 import { IFetchPlayerGearDto } from 'toxicgeartracker-shared';
 
 class FetchPlayerGearDto implements IFetchPlayerGearDto{
