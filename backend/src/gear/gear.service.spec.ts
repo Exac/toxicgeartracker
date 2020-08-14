@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { GearService } from './gear.service';
 import { request } from './request.fixture';
-import { Player } from '../player';
+import { Player } from 'toxicgeartracker-shared';
 import { HttpModule } from '@nestjs/common';
 
 describe('GearService', () => {

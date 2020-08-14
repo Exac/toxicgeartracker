@@ -4,20 +4,21 @@ import {
   WebSocketGateway,
   WsResponse,
 } from '@nestjs/websockets';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GearService } from './gear/gear.service';
+import { IFetchPlayerGearDto, Player } from 'toxicgeartracker-shared';
 
 @WebSocketGateway()
 export class GearGateway {
   constructor(private readonly gear: GearService) {}
 
   @SubscribeMessage('fetchPlayersGear')
-  onEvent(@MessageBody() data: unknown): Observable<WsResponse<number>> {
-
-    const event = 'fetchPlayersGear';
-    const response = [1, 2, 3];
-
-    return from(response).pipe(map(data => ({ event, data })));
+  onEvent(
+    @MessageBody() data: IFetchPlayerGearDto,
+  ): Observable<WsResponse<Player>> {
+    return this.gear
+      .getPlayer(data.player, data.server ?? 'Fairbanks')
+      .pipe(map(player => ({ event: 'fetchPlayersGear', data: player })));
   }
 }
