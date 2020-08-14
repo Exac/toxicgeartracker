@@ -3,7 +3,7 @@ import { Equips } from "./equips";
 export type Player = {
   name: string;
   server: string;
-  class:
+  spec:
     | "Druid"
     | "Hunter"
     | "Mage"

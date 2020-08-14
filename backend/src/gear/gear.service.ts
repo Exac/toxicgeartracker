@@ -26,7 +26,7 @@ export class GearService {
     return {
       name: request.info.name,
       server: request.info.server,
-      class: request.info.spec,
+      spec: request.info.spec,
       updated: request.info.updated,
       gear,
       wearing,
@@ -35,27 +35,27 @@ export class GearService {
 
   private static convertIFPCharacterToEquips(character: IFPCharacter): Equips {
     return {
-      Head: GearService.convertIFPGearArrayToItemArray(character.Head),
-      Neck: GearService.convertIFPGearArrayToItemArray(character.Neck),
-      Shoulder: GearService.convertIFPGearArrayToItemArray(character.Shoulder),
-      Chest: GearService.convertIFPGearArrayToItemArray(character.Chest),
-      Back: GearService.convertIFPGearArrayToItemArray(character.Back),
-      Shirt: GearService.convertIFPGearArrayToItemArray(character.Shirt),
-      Tabard: GearService.convertIFPGearArrayToItemArray(character.Tabard),
-      Wrist: GearService.convertIFPGearArrayToItemArray(character.Wrist),
-      Hands: GearService.convertIFPGearArrayToItemArray(character.Hands),
-      Waist: GearService.convertIFPGearArrayToItemArray(character.Waist),
-      Legs: GearService.convertIFPGearArrayToItemArray(character.Legs),
-      Feet: GearService.convertIFPGearArrayToItemArray(character.Feet),
-      Finger: GearService.convertIFPGearArrayToItemArray(character.Finger),
-      Trinket: GearService.convertIFPGearArrayToItemArray(character.Trinket),
-      'Main Hand': GearService.convertIFPGearArrayToItemArray(
+      head: GearService.convertIFPGearArrayToItemArray(character.Head),
+      neck: GearService.convertIFPGearArrayToItemArray(character.Neck),
+      shoulder: GearService.convertIFPGearArrayToItemArray(character.Shoulder),
+      chest: GearService.convertIFPGearArrayToItemArray(character.Chest),
+      back: GearService.convertIFPGearArrayToItemArray(character.Back),
+      shirt: GearService.convertIFPGearArrayToItemArray(character.Shirt),
+      tabard: GearService.convertIFPGearArrayToItemArray(character.Tabard),
+      wrist: GearService.convertIFPGearArrayToItemArray(character.Wrist),
+      hands: GearService.convertIFPGearArrayToItemArray(character.Hands),
+      waist: GearService.convertIFPGearArrayToItemArray(character.Waist),
+      legs: GearService.convertIFPGearArrayToItemArray(character.Legs),
+      feet: GearService.convertIFPGearArrayToItemArray(character.Feet),
+      finger: GearService.convertIFPGearArrayToItemArray(character.Finger),
+      trinket: GearService.convertIFPGearArrayToItemArray(character.Trinket),
+      mainHand: GearService.convertIFPGearArrayToItemArray(
         character['Main Hand'],
       ),
-      'Two Hand': GearService.convertIFPGearArrayToItemArray(
+      twoHand: GearService.convertIFPGearArrayToItemArray(
         character['Two Hand'],
       ),
-      Ranged: GearService.convertIFPGearArrayToItemArray(character.Ranged),
+      ranged: GearService.convertIFPGearArrayToItemArray(character.Ranged),
     };
   }
 

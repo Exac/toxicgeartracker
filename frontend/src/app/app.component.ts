@@ -16,7 +16,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.gear.onFetchPlayerGear().subscribe((player) => {
-      this.player = JSON.stringify(player);
+      this.player = this.player + `${JSON.stringify(player)}\n`;
     });
   }
 

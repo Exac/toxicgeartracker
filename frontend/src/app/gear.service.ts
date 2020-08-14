@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import * as io from 'socket.io-client';
 import { environment } from '../environments/environment';
 import Socket = SocketIOClient.Socket;
+import { Player } from 'toxicgeartracker-shared';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class GearService {
 
   private socket: Socket;
 
-  constructor(private http: HttpClient) {
+  constructor() {
     const backendURI = `${environment.backend.uri}:${environment.backend.port}`;
     this.socket = io(backendURI);
   }
@@ -25,10 +25,14 @@ export class GearService {
 
   onFetchPlayerGear() {
     return new Observable(observer => {
-      this.socket.on('fetchPlayersGear', (msg: string) => {
-        console.log(`SOCKET RECV fetchPlayersGear`, { msg });
-        observer.next(msg);
-      })
+      this.socket.on("fetchPlayersGear", (player: Player ) => {
+        console.log(`SOCKET RECV fetchPlayersGear`, { player });
+        // 1. Store this player in the localstorage database
+        // TODO: Store player in localstorage database
+        // 2.
+
+        observer.next(player);
+      });
     })
   }
 

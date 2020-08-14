@@ -1,21 +1,21 @@
 import { Item } from "./item";
 
 export type Equips = {
-  Head: Item[];
-  Neck: Item[];
-  Shoulder: Item[];
-  Chest: Item[];
-  Back: Item[];
-  Shirt: Item[];
-  Tabard: Item[];
-  Wrist: Item[];
-  Hands: Item[];
-  Waist: Item[];
-  Legs: Item[];
-  Feet: Item[];
-  Finger: Item[];
-  Trinket: Item[];
-  "Main Hand": Item[];
-  "Two Hand": Item[];
-  Ranged: Item[];
+  head: Item[];
+  neck: Item[];
+  shoulder: Item[];
+  chest: Item[];
+  back: Item[];
+  shirt: Item[];
+  tabard: Item[];
+  wrist: Item[];
+  hands: Item[];
+  waist: Item[];
+  legs: Item[];
+  feet: Item[];
+  finger: Item[];
+  trinket: Item[];
+  mainHand: Item[];
+  twoHand: Item[];
+  ranged: Item[];
 };
