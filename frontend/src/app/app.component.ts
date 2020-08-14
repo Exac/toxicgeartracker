@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { RosterService } from "./roster.service";
 import { GearService } from "./gear.service";
 import { DatabaseService } from "./database.service";
+import { Equips, Item } from 'toxicgeartracker-shared';
 
 @Component({
   selector: "app-root",
@@ -12,6 +13,7 @@ export class AppComponent implements OnInit {
   name = "";
   server = "";
   player = "";
+  csv = "";
 
   constructor(
     private roster: RosterService,
@@ -28,7 +30,7 @@ export class AppComponent implements OnInit {
   fetchRoster() {
     this.roster.fetchRoster().subscribe((v: string[]) => {
       console.log(v.sort());
-      v.forEach(name => this.gear.fetchPlayersGear(name, 'Fairbanks'));
+      v.forEach(name => this.gear.fetchPlayersGear(name, "Fairbanks"));
     });
   }
 
@@ -46,5 +48,14 @@ export class AppComponent implements OnInit {
 
   setServer(server: string) {
     this.server = server;
+  }
+
+  generateCSV() {
+    let csv =
+      "name,class,item,\n";
+    for (const [n, p] of this.db.getAllPlayers()) {
+      Object.entries(p.wearing).map(([slot,item]) => item.map((i: Item) => csv += `${p.name},${p.spec},${i.name},\n`));
+    }
+    this.csv = csv;
   }
 }
