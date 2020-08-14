@@ -16,6 +16,8 @@ describe("DatabaseService", () => {
       store = {};
     }
   };
+  const validPlayers: string =
+    '[["foo",{"name":"exac","server":"fairbanks","spec":"Priest","updated":"2020-08-08","gear":{"head":[],"neck":[],"shoulder":[],"chest":[],"back":[],"shirt":[],"tabard":[],"wrist":[],"hands":[],"waist":[],"legs":[],"feet":[],"finger":[],"trinket":[],"mainHand":[],"twoHand":[],"ranged":[]},"wearing":{"head":[],"neck":[],"shoulder":[],"chest":[],"back":[],"shirt":[],"tabard":[],"wrist":[],"hands":[],"waist":[],"legs":[],"feet":[],"finger":[],"trinket":[],"mainHand":[],"twoHand":[],"ranged":[]}}]]';
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -27,19 +29,37 @@ describe("DatabaseService", () => {
     spyOn(localStorage, "clear").and.callFake(mockLocalStorage.clear);
   });
 
+  afterEach(() => {
+    store = {};
+  });
+
   it("should be created", () => {
     expect(service).toBeTruthy();
   });
 
   describe("getPlayers", () => {
     it("should call localStorage to get the players", () => {
-      // Arrange, Act
+      // Arrange
+      store = { players: validPlayers };
+
+      // Act
       const result = service.getPlayers();
 
       // Assert
       expect(result).toBeTruthy();
       expect(localStorage.getItem).toHaveBeenCalledTimes(1);
       expect(localStorage.getItem).toHaveBeenCalledWith("players");
+      expect(result).toEqual(new Map(JSON.parse(validPlayers)));
+    });
+    it("should get an empty map when there is nothing stored in localstorage", () => {
+      // Arrange
+      store = {};
+
+      // Act
+      const result = service.getPlayers();
+
+      // Assert
+      expect(result).toEqual(new Map());
     });
   });
 
@@ -72,7 +92,7 @@ describe("DatabaseService", () => {
       // Arrange
       const validMap = new Map<string, Player>([
         [
-          "foo",
+          "exac",
           {
             name: "exac",
             server: "fairbanks",
@@ -115,11 +135,11 @@ describe("DatabaseService", () => {
               mainHand: [],
               twoHand: [],
               ranged: []
-            },
+            }
           }
         ]
       ]);
-
+      console.log(JSON.stringify([...validMap]));
       // Act
       const result = DatabaseService.isPlayersMap(validMap);
 

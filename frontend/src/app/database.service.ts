@@ -33,8 +33,8 @@ class Equips implements EquipsType {
 
 class Player implements PlayerType {
   constructor(
-    public name: string = '',
-    public server: string = '',
+    public name: string = "",
+    public server: string = "",
     public spec:
       | "Druid"
       | "Hunter"
@@ -44,8 +44,8 @@ class Player implements PlayerType {
       | "Rogue"
       | "Shaman"
       | "Warlock"
-      | "Warrior" = 'Warrior',
-    public updated: string = '2004-11-23',
+      | "Warrior" = "Warrior",
+    public updated: string = "2004-11-23",
     public gear: Equips = new Equips(),
     public wearing: Equips = new Equips()
   ) {}
@@ -58,21 +58,56 @@ export class DatabaseService {
   constructor() {}
 
   getPlayers(): Map<string, PlayerType> {
-    const lsPlayers: string | null = localStorage.getItem("players");
-    return new Map();
+    const dbPlayersStr: string | null = localStorage.getItem("players");
+    console.warn({ dbPlayersStr });
+    let dbPlayersEntries: [] | undefined;
+    try {
+      dbPlayersEntries = dbPlayersStr !== null ? JSON.parse(dbPlayersStr) : [];
+      console.warn({ dbPlayersEntries });
+      if(dbPlayersEntries === undefined) {
+        console.warn(`Parsed dbPlayersEntries was undefined`);
+        return new Map();
+      }
+    } catch (e) {
+      console.warn(`Couldn't parse string:`,dbPlayersStr, e);
+      return new Map();
+    }
+    const dbPlayersMap = new Map(dbPlayersEntries);
+    console.log({dbPlayersEntries: JSON.stringify(dbPlayersEntries)}, {dbPlayersMap});
+    if(DatabaseService.isPlayersMap(dbPlayersMap)) {
+      return dbPlayersMap;
+    } else {
+      console.warn(`Database's players map was invalid`);
+      return new Map();
+    }
   }
 
-  static isPlayersMap(obj: any): obj is Map<string, PlayerType> {
-    if (obj instanceof Map) {
+  /** Validate player maps */
+  static isPlayersMap(mapObj: any): mapObj is Map<string, PlayerType> {
+    if (!(mapObj instanceof Map)) {
       return false;
     }
-    for (const [key, value] of obj.entries()) {
-      for (const [k] of [Object.keys(new Player())]) {
-        console.log(k);
+
+    for (const [_name, player] of mapObj.entries()) {
+      if (
+        !player.name ||
+        typeof player.name !== "string" ||
+        !player.server ||
+        typeof player.server !== "string" ||
+        !player.spec ||
+        typeof player.spec !== "string" ||
+        !player.updated ||
+        typeof player.updated !== "string" ||
+        !player.gear ||
+        typeof player.gear !== "object" ||
+        !player.wearing ||
+        typeof player.wearing !== "object"
+      ) {
+        return false;
       }
-      const checks = {
-        name: () => {}
-      };
+      if (player?.gear?.head?.id && typeof player.gear.head.id !== "number") {
+        return false;
+      }
     }
 
     return true;
