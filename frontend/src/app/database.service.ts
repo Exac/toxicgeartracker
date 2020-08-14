@@ -32,23 +32,32 @@ class Equips implements EquipsType {
 }
 
 class Player implements PlayerType {
-  constructor(
-    public name: string = "",
-    public server: string = "",
-    public spec:
-      | "Druid"
-      | "Hunter"
-      | "Mage"
-      | "Paladin"
-      | "Priest"
-      | "Rogue"
-      | "Shaman"
-      | "Warlock"
-      | "Warrior" = "Warrior",
-    public updated: string = "2004-11-23",
-    public gear: Equips = new Equips(),
-    public wearing: Equips = new Equips()
-  ) {}
+  public name: string = "";
+  public server: string = "";
+  public spec:
+    | "Druid"
+    | "Hunter"
+    | "Mage"
+    | "Paladin"
+    | "Priest"
+    | "Rogue"
+    | "Shaman"
+    | "Warlock"
+    | "Warrior" = "Shaman";
+  public updated: string = "2004-11-23";
+  public gear: Equips = new Equips();
+  public wearing: Equips = new Equips();
+
+  constructor(player?: PlayerType) {
+    if (player !== undefined) {
+      this.name = player.name;
+      this.server = player.server;
+      this.spec = player.spec;
+      this.updated = player.updated;
+      this.gear = player.gear;
+      this.wearing = player.wearing;
+    }
+  }
 }
 
 @Injectable({
@@ -57,29 +66,69 @@ class Player implements PlayerType {
 export class DatabaseService {
   constructor() {}
 
-  getPlayers(): Map<string, PlayerType> {
+  getPlayer(name: string, server?: string): PlayerType | null {
+    const players = this.getAllPlayers();
+    for (const [n, p] of players.entries()) {
+      if (
+        p.name.toLowerCase() === name.toLowerCase() &&
+        (server === undefined ||
+          server.toLowerCase() === p.server.toLowerCase())
+      ) {
+        return p;
+      }
+    }
+    return null;
+  }
+
+  getAllPlayers(): Map<string, PlayerType> {
     const dbPlayersStr: string | null = localStorage.getItem("players");
-    console.warn({ dbPlayersStr });
     let dbPlayersEntries: [] | undefined;
     try {
       dbPlayersEntries = dbPlayersStr !== null ? JSON.parse(dbPlayersStr) : [];
-      console.warn({ dbPlayersEntries });
-      if(dbPlayersEntries === undefined) {
-        console.warn(`Parsed dbPlayersEntries was undefined`);
+      if (dbPlayersEntries === undefined) {
         return new Map();
       }
     } catch (e) {
-      console.warn(`Couldn't parse string:`,dbPlayersStr, e);
       return new Map();
     }
     const dbPlayersMap = new Map(dbPlayersEntries);
-    console.log({dbPlayersEntries: JSON.stringify(dbPlayersEntries)}, {dbPlayersMap});
-    if(DatabaseService.isPlayersMap(dbPlayersMap)) {
+    if (DatabaseService.isPlayersMap(dbPlayersMap)) {
       return dbPlayersMap;
     } else {
-      console.warn(`Database's players map was invalid`);
       return new Map();
     }
+  }
+
+  updateAllPlayers(players: Map<string, PlayerType>) {
+    const entries = [...players];
+    const str = JSON.stringify(entries);
+    localStorage.setItem("players", str);
+  }
+
+  setPlayer(player: PlayerType) {
+    const players = this.getAllPlayers();
+    players.set(player.name, player);
+    this.updateAllPlayers(players);
+  }
+
+  private static isPlayer(player: any): player is PlayerType {
+    if (
+      !player.name ||
+      typeof player.name !== "string" ||
+      !player.server ||
+      typeof player.server !== "string" ||
+      !player.spec ||
+      typeof player.spec !== "string" ||
+      !player.updated ||
+      typeof player.updated !== "string" ||
+      !player.gear ||
+      typeof player.gear !== "object" ||
+      !player.wearing ||
+      typeof player.wearing !== "object"
+    ) {
+      return false;
+    }
+    return !(player?.gear?.head?.id && typeof player.gear.head.id !== "number");
   }
 
   /** Validate player maps */
@@ -88,24 +137,8 @@ export class DatabaseService {
       return false;
     }
 
-    for (const [_name, player] of mapObj.entries()) {
-      if (
-        !player.name ||
-        typeof player.name !== "string" ||
-        !player.server ||
-        typeof player.server !== "string" ||
-        !player.spec ||
-        typeof player.spec !== "string" ||
-        !player.updated ||
-        typeof player.updated !== "string" ||
-        !player.gear ||
-        typeof player.gear !== "object" ||
-        !player.wearing ||
-        typeof player.wearing !== "object"
-      ) {
-        return false;
-      }
-      if (player?.gear?.head?.id && typeof player.gear.head.id !== "number") {
+    for (const player of mapObj.values()) {
+      if (!DatabaseService.isPlayer(player)) {
         return false;
       }
     }

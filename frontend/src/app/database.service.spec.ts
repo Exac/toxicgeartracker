@@ -17,7 +17,7 @@ describe("DatabaseService", () => {
     }
   };
   const validPlayers: string =
-    '[["foo",{"name":"exac","server":"fairbanks","spec":"Priest","updated":"2020-08-08","gear":{"head":[],"neck":[],"shoulder":[],"chest":[],"back":[],"shirt":[],"tabard":[],"wrist":[],"hands":[],"waist":[],"legs":[],"feet":[],"finger":[],"trinket":[],"mainHand":[],"twoHand":[],"ranged":[]},"wearing":{"head":[],"neck":[],"shoulder":[],"chest":[],"back":[],"shirt":[],"tabard":[],"wrist":[],"hands":[],"waist":[],"legs":[],"feet":[],"finger":[],"trinket":[],"mainHand":[],"twoHand":[],"ranged":[]}}]]';
+    '[["exac",{"name":"exac","server":"fairbanks","spec":"Priest","updated":"2020-08-08","gear":{"head":[],"neck":[],"shoulder":[],"chest":[],"back":[],"shirt":[],"tabard":[],"wrist":[],"hands":[],"waist":[],"legs":[],"feet":[],"finger":[],"trinket":[],"mainHand":[],"twoHand":[],"ranged":[]},"wearing":{"head":[],"neck":[],"shoulder":[],"chest":[],"back":[],"shirt":[],"tabard":[],"wrist":[],"hands":[],"waist":[],"legs":[],"feet":[],"finger":[],"trinket":[],"mainHand":[],"twoHand":[],"ranged":[]}}],["epuration",{"name":"Epuration","server":"fairbanks","spec":"Warrior","updated":"2020-08-09","gear":{"head":[],"neck":[],"shoulder":[],"chest":[],"back":[],"shirt":[],"tabard":[],"wrist":[],"hands":[],"waist":[],"legs":[],"feet":[],"finger":[],"trinket":[],"mainHand":[],"twoHand":[],"ranged":[]},"wearing":{"head":[],"neck":[],"shoulder":[],"chest":[],"back":[],"shirt":[],"tabard":[],"wrist":[],"hands":[],"waist":[],"legs":[],"feet":[],"finger":[],"trinket":[],"mainHand":[],"twoHand":[],"ranged":[]}}]]';
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
@@ -37,13 +37,48 @@ describe("DatabaseService", () => {
     expect(service).toBeTruthy();
   });
 
-  describe("getPlayers", () => {
+  describe("getPlayer", () => {
+    it("should get the right player from the database", () => {
+      // Arrange
+      store = { players: validPlayers };
+
+      // Act
+      const result = service.getPlayer("epuration", "fairbanks");
+
+      // Assert
+      expect(result).toBeTruthy();
+      expect(result?.name).toEqual("Epuration");
+    });
+    it("should return null if the player isn't stored in the database", () => {
+      // Arrange
+      store = { players: validPlayers };
+
+      // Act
+      const result = service.getPlayer("Mallory", "fairbanks");
+
+      // Assert
+      expect(result).toEqual(null);
+    });
+    it("should find a player by name if server isn't provided", () => {
+      // Arrange
+      store = { players: validPlayers };
+
+      // Act
+      const result = service.getPlayer("exac");
+
+      // Assert
+      expect(result).toBeTruthy();
+      expect(result?.name.toLowerCase()).toEqual("exac");
+    });
+  });
+
+  describe("getAllPlayers", () => {
     it("should call localStorage to get the players", () => {
       // Arrange
       store = { players: validPlayers };
 
       // Act
-      const result = service.getPlayers();
+      const result = service.getAllPlayers();
 
       // Assert
       expect(result).toBeTruthy();
@@ -56,7 +91,7 @@ describe("DatabaseService", () => {
       store = {};
 
       // Act
-      const result = service.getPlayers();
+      const result = service.getAllPlayers();
 
       // Assert
       expect(result).toEqual(new Map());
@@ -139,7 +174,7 @@ describe("DatabaseService", () => {
           }
         ]
       ]);
-      console.log(JSON.stringify([...validMap]));
+
       // Act
       const result = DatabaseService.isPlayersMap(validMap);
 
